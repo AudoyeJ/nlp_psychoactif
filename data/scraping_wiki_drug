@@ -1,0 +1,146 @@
+import requests
+from bs4 import BeautifulSoup
+from urllib.parse import urljoin
+import time
+import json
+
+BASE_URL = "https://psychonautwiki.org"
+START_URL = "https://psychonautwiki.org/wiki/Experience_index"
+
+headers = {
+    "User-Agent": "Mozilla/5.0"
+}
+
+def get_soup(url):
+    try:
+        res = requests.get(url, headers=headers)
+        res.raise_for_status()
+        return BeautifulSoup(res.text, "html.parser")
+    except Exception as e:
+        print(f"Erreur : {e}")
+        return None
+
+def get_drug_links():
+    soup = get_soup(START_URL)
+    drugs = []
+
+    items = soup.select("li.featured.list-item")
+
+    for item in items:
+        # 🔹 Nom + lien de la drogue
+        title_tag = item.select_one("h4.media-heading a")
+        
+        if not title_tag:
+            continue
+
+        drug_name = title_tag.get_text(strip=True)
+        drug_url = urljoin(BASE_URL, title_tag["href"])
+
+        # 🔹 Expériences associées
+        experiences = []
+
+        for exp in item.select("ul li a"):
+            href = exp.get("href", "")
+
+            # ✅ garder uniquement les pages d'expérience
+            if not href.startswith("/wiki/Experience:"):
+                continue
+
+            exp_name = exp.get_text(strip=True)
+            exp_link = urljoin(BASE_URL, href)
+
+            print(f"[EXP] {exp_name} -> {exp_link}")
+
+            experiences.append({
+                "name": exp_name,
+                "url": exp_link
+            })
+        # 👉 DEBUG drogue
+        print(f"\n[DRUG] {drug_name} -> {drug_url}\n")
+
+        drugs.append({
+            "drug": drug_name,
+            "drug_url": drug_url,
+            "experiences": experiences
+        })
+
+    return drugs
+    
+def scrape_experience_page(url):
+    soup = get_soup(url)
+    if not soup:
+        return None
+
+    result = {}
+
+    # --- EXTRACTION DU REPORT ---
+    report_content = []
+    report_header = soup.find(id="Report")
+    if report_header:
+        current = report_header.parent  # <h3>
+        for sibling in current.find_next_siblings():
+            if sibling.name == "h3":
+                span = sibling.find("span")
+                if span and span.get("id") == "Effects_analysis":
+                    break
+            if sibling.name == "p":
+                text = sibling.get_text(strip=True)
+                if text:
+                    report_content.append(text)
+    result["report"] = report_content
+
+    # --- EXTRACTION DES EFFETS ---
+    effects = []
+    effects_header = soup.find(id="Effects_analysis")
+    if effects_header:
+        current = effects_header.parent  # <h3>
+        # Le <ul> juste après contient les effets
+        ul = current.find_next_sibling("ul")
+        if ul:
+            for li in ul.find_all("li"):
+                strong = li.find("b")  # le nom est souvent dans <b>
+                
+                if strong:
+                    effect_name = strong.get_text(" ", strip=True)
+                else:
+                    effect_name = li.find("a").get_text(strip=True) if li.find("a") else None
+
+                description = li.get_text(strip=True)
+
+                effects.append({
+                    "effect": effect_name,
+                    "description": description
+                })
+    result["effects"] = effects
+
+    return result
+
+def main():
+    drugs = get_drug_links()
+    print(f"{len(drugs)} drogues trouvées")
+
+    page_count = 0
+    MAX_PAGES = 1000000000000000000
+    stop = False
+
+    for drug in drugs:
+        for exp in drug["experiences"]:
+            if page_count >= MAX_PAGES:
+                stop = True
+                break
+            print(f"Scraping: {exp['name']}")
+            details = scrape_experience_page(exp["url"])
+            exp["data"] = details
+            page_count += 1
+            time.sleep(1)
+        if stop:
+            break
+
+    import os
+    os.makedirs("data", exist_ok=True)
+
+    with open("data/wikidrugs.json", "w", encoding="utf-8") as f:
+        json.dump(drugs, f, indent=4, ensure_ascii=False)
+
+if __name__ == "__main__":
+    main()
