@@ -75,7 +75,7 @@ from drug_taxonomy import (
     PHARMACOLOGICAL_FAMILY_MAP, PHARM_COLORS, pharm_family, get_pharm_color,
 )
 
-BG = "#0D0B14" #fdf6e3"
+BG = "#0D0B14" #fdf6e3
 PANEL = "#171320"
 GRID = "#2D2640"
 TEXT = "#F1EDFA"
