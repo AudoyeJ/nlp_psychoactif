@@ -6,8 +6,10 @@ substances psychoactives ("trip reports").
 
 Chaque phrase d'un récit a été passée dans un classifieur qui lui attribue ses 3
 effets les plus probables (ex. *internal hallucination*, *anxiety*, *time distortion…*).
-D'autre part, chaque substance est vectorisée soit selon la distribution des effets phénoménologiques associés à l'ensemble des rapports la concernant, soit selon les vecteurs sémantiques denses des phrases mentionnant un effet. 
+
+Chaque substance est vectorisée soit selon la distribution des effets phénoménologiques associés à l'ensemble des rapports la concernant, soit selon les vecteurs sémantiques denses des phrases mentionnant un effet. 
 De cette manière, il est possible de projeter les substances dans un espace vectoriel et d'établir des clusters de similarité.
+
 L'application explore comment ces effets se répartissent, évoluent au fil d'un trip
 (montée → pic → descente), et diffèrent selon la substance, sa famille chimique/
 pharmacologique, ou la source du récit.
