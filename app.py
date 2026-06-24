@@ -75,6 +75,28 @@ from drug_taxonomy import (
     PHARMACOLOGICAL_FAMILY_MAP, PHARM_COLORS, pharm_family, get_pharm_color,
 )
 
+# ----------------------------------------------------------------------------
+# Substances autorisées (≥2 rapports) — hardcodé depuis drogues_2plus.txt
+# pour que l'app n'ait pas besoin de lire ce fichier au runtime.
+# Toute substance absente de cette liste est exclue des données affichées.
+# ----------------------------------------------------------------------------
+ALLOWED_DRUGS = {
+    "4-AcO-DMT", "LSD", "DXM", "DMT", "Mushrooms", "Ayahuasca", "Cannabis",
+    "Salvia divinorum", "MDMA", "4-HO-MET", "DPH", "Ketamine", "LSA",
+    "1P-LSD", "3-MeO-PCP", "2C-B", "25I-NBOMe", "4-HO-MiPT", "DPT",
+    "Mirtazapine", "2C-E", "4-AcO-DET", "ALD-52", "Ephenidine", "AL-LAD",
+    "DOC", "Datura", "1cP-LSD", "25C-NBOMe", "2C-C", "2C-I", "3-MeO-PCE",
+    "Syrian Rue", "4-AcO-MET", "Nitrous Oxide", "DiPT", "Diphenidine",
+    "Meditation", "Methoxphenidine", "Difluoromethyl-ALEPH", "αMT",
+    "βk-2C-B", "U-47700", "Zopiclone", "Etizolam", "Pregabalin",
+    "Nootropics", "Sleep paralysis", "2C-D", "2C-P", "3-HO-PCP",
+    "4-HO-DET", "4-PrO-DMT", "5-MeO-MET", "Benzydamine", "DCK", "DOB",
+    "ETH-LAD", "Gaboxadol", "MDA", "Memantine", "Psilocybin Mushrooms",
+    "EPT", "Nutmeg / Myristicin", "Zaleplon", "Ethylphenidate",
+    "Isopropylphenidate", "Methylphenidate", "Theobromine / Cacao",
+    "Alprazolam", "F-Phenibut", "Gabapentin", "Kratom",
+}
+
 BG = "#0D0B14" #fdf6e3"
 PANEL = "#171320"
 GRID = "#2D2640"
@@ -358,6 +380,15 @@ if "drug" not in sentences.columns:
     sentences["drug"] = sentences["titre"].map(lambda t: reports.get(t, {}).get("drug", "Inconnu"))
 if "chem_family" not in sentences.columns:
     sentences["chem_family"] = sentences["drug"].map(chem_family)
+
+# ----------------------------------------------------------------------------
+# Filtrage : on ignore toute substance absente de ALLOWED_DRUGS (≥2 rapports
+# dans drogues_2plus.txt). Filtre appliqué une fois, en amont de tous les
+# onglets, sur les trois sources de données (reports, sentences, drug_vectors).
+# ----------------------------------------------------------------------------
+reports = {titre: meta for titre, meta in reports.items() if meta.get("drug") in ALLOWED_DRUGS}
+sentences = sentences[sentences["drug"].isin(ALLOWED_DRUGS)].reset_index(drop=True)
+drug_vectors = {drug: vec for drug, vec in drug_vectors.items() if drug in ALLOWED_DRUGS}
 
 st.markdown('<div class="eyebrow">NLP · récits de trip · effectindex & psychonautwiki</div>',
             unsafe_allow_html=True)
