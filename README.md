@@ -204,15 +204,16 @@ visualisation — ce n'est pas une référence pharmacologique.**
 
 ## Limites connues
 
+- Seules les substances ayant au moins deux rapports sont retenues afin d'éviter les biais (codé en dur dans app.py).
 - Le seuil `MIN_PHRASES = 25` exclut des deux cartes les substances trop peu représentées
   (vecteur trop bruité) — elles restent visibles dans les autres onglets.
 - Le matching entre `mean_embeddings_by_substance.csv` et les noms de substances internes
   est sensible à la casse/orthographe ; une table d'alias (`EMBEDDING_NAME_ALIASES`) corrige
   les écarts connus, à étendre si de nouvelles substances sont ajoutées.
 - La classification chimique/pharmacologique (`drug_taxonomy.py`) est une simplification
-  manuelle, pas une nomenclature officielle.
+  manuelle, pas une nomenclature officielle, mais basée sur les catégories schématiques trouvables en Réduction des Risques.
 - Les clusters HDBSCAN sont calculés sur les coordonnées UMAP déjà réduites (et non sur les
-  vecteurs d'origine à plus haute dimension), par choix de cohérence avec ce qui est affiché.
+  vecteurs d'origine à plus haute dimension).
 
 ## Données & licence
 
