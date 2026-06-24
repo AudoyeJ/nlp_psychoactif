@@ -100,8 +100,7 @@ cartes — l'application ne propose aucun réglage UMAP/HDBSCAN en interface, pa
 ├── app.py                          # Application Streamlit (runtime)
 ├── precompute_drug_vectors.py      # Script de précalcul (UMAP + HDBSCAN), à lancer hors-ligne
 ├── drug_taxonomy.py                # Double classification des substances (chimique / pharmacologique)
-├── requirements.txt                # Dépendances de l'application (légères)
-├── requirements-precompute.txt     # Dépendances additionnelles du script de précalcul
+├── requirements.txt                # Dépendances de l'application (légères) 
 └── data/
     ├── sentences.csv                       # 1 ligne = 1 phrase annotée (effets top-1/2/3 + scores)
     ├── reports.json                        # 1 entrée = 1 récit (métadonnées + clé _drug_vectors)
@@ -197,12 +196,6 @@ visualisation — ce n'est pas une référence pharmacologique.**
 | `pandas` | Manipulation des données |
 | `plotly` | Graphiques interactifs |
 | `numpy` | Calcul des ellipses de cluster (algèbre linéaire) |
-
-**Précalcul uniquement (`requirements-precompute.txt`)** — installés en plus, jamais
-requis par l'application elle-même :
-
-| Paquet | Usage |
-|---|---|
 | `umap-learn` | Projection 2D des vecteurs d'effets et des embeddings sémantiques |
 | `hdbscan` | Clustering automatique après UMAP |
 | `scikit-learn` | Pondération TF-IDF du profil d'effets |
