@@ -10,11 +10,6 @@ L'application explore comment ces effets se répartissent, évoluent au fil d'un
 (montée → pic → descente), et diffèrent selon la substance, sa famille chimique/
 pharmacologique, ou la source du récit.
 
-> **Avertissement.** Ce projet est un travail exploratoire de data science / NLP à visée
-> descriptive. Il ne constitue ni un avis médical, ni une recommandation de consommation,
-> ni une évaluation de risque ou de dosage. Les données reflètent des témoignages en ligne,
-> pas une vérité clinique.
-
 ---
 
 ## Aperçu des fonctionnalités
