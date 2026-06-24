@@ -465,8 +465,8 @@ with tab_overview:
 # TAB 2 — CARTOGRAPHIE (sous-onglets)
 # ----------------------------------------------------------------------------
 with tab_carto:
-    tab_umap, tab_semantic = st.tabs(
-        ["Clusterization via effet subjectif", "Clusterization via vecteur sémantique"]
+    tab_semantic, tab_umap = st.tabs(
+        ["Clusterization via vecteur sémantique", "Clusterization via effet subjectif"]
     )
 
     # -- Sous-onglet : Clusterization via effet subjectif --
